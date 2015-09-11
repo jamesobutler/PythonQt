@@ -40,7 +40,7 @@
 //----------------------------------------------------------------------------------
 
 #include <PythonQt.h>
-  
+
 #ifndef Py_XSETREF // Some Python2, but not the latest one
 #define Py_XSETREF(op1, op2)                       \
   do {                                             \
@@ -109,7 +109,7 @@ PythonQtObjectPtr::PythonQtObjectPtr(PythonQtSafeObjectPtr &&p) :_object(p.takeO
 
 PythonQtObjectPtr::~PythonQtObjectPtr()
 {
-  Py_XDECREF(_object);
+  if (_object && Py_IsInitialized()) Py_DECREF(_object);
 }
 
 void PythonQtObjectPtr::setNewRef(PyObject* o)
@@ -119,7 +119,7 @@ void PythonQtObjectPtr::setNewRef(PyObject* o)
   }
 }
 
-bool PythonQtObjectPtr::fromVariant(const QVariant& variant) 
+bool PythonQtObjectPtr::fromVariant(const QVariant& variant)
 {
   if (!variant.isNull()) {
     PyObject* object = nullptr;
@@ -134,7 +134,7 @@ bool PythonQtObjectPtr::fromVariant(const QVariant& variant)
   else {
     setObject(nullptr);
     return false;
-  } 
+  }
 }
 
 QVariant PythonQtObjectPtr::toVariant()
