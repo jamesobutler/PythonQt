@@ -41,6 +41,7 @@
 
 #include "PythonQt.h"
 #include "PythonQtTests.h"
+#include "PythonQtTestCleanup.h"
 
 #include <QApplication>
 
@@ -60,7 +61,14 @@ int main(int argc, char *argv[])
 
   PythonQt::cleanup();
 
-  if (failCount) {
+  if (Py_IsInitialized()) {
+    Py_Finalize();
+  }
+
+  PythonQtTestCleanup cleanup;
+  failCount += QTest::qExec(&cleanup, argc, argv);
+
+  if (failCount>0) {
     std::cerr << "Tests failed: " << failCount << std::endl;
   } else {
     std::cout << "All tests passed successfully." << std::endl;
