@@ -25,6 +25,14 @@ PYTHONQT_GENERATED_PATH = $$PWD/../generated_cpp
   PYTHONQT_GENERATED_PATH = $$PWD/../generated_cpp_$${QT_MAJOR_VERSION}$${QT_MINOR_VERSION}
 
   !exists($$PYTHONQT_GENERATED_PATH) {
+    equals(QT_MAJOR_VERSION, 6) {
+      lessThan(QT_MINOR_VERSION, 6) { # 6.1, 6.2, 6.3, 6.4
+        PYTHONQT_GENERATED_PATH = $$PWD/../generated_cpp_60
+      }
+      else { # >6.6
+        PYTHONQT_GENERATED_PATH = $$PWD/../generated_cpp_66
+      }
+    }
     # For Qt5 we know that the older generated wrappers work with the later
     # versions, even (apparently) Qt5.15, so:
     equals(QT_MAJOR_VERSION, 5) {
